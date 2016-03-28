@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
 # should be started each hour with cron
-#10 * * * * python /path/getTemperaturesForecast.py
+#10 * * * * /path/getTemperaturesForecast.py
 import xml.etree.ElementTree as ET
 import urllib
 import urllib.request
