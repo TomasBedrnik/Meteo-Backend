@@ -21,6 +21,7 @@ if(len(sys.argv) == 1):
 else:
     imageDir = sys.argv[1]
 
+makedirs(imageDir)
 shutil.rmtree(imageDir)
 makedirs(imageDir)
 
