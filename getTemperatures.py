@@ -1,7 +1,7 @@
 #!/usr/bin/python2
-# should be started each minute with cron
+#should be executed each minute with cron
 #*/1 * * * * /path/getTemperatures.py
-# system time has tobe rigt -> start after NTP time sync
+#system time has tobe rigt -> start after NTP time sync
 
 import datetime
 import os
@@ -38,5 +38,5 @@ def read_temp():
         temp_c = float(temp_string) / 1000.0
         return temp_c
 
-with open("/home/john/meteror-Data/"+d.strftime("%Y-%m-%d")+".csv", "a") as f:
+with open("/home/john/meteor-Data/"+d.strftime("%Y-%m-%d")+".csv", "a") as f:
     f.write(d.strftime("%Y-%m-%d %H:%M:%S,"+str(temperature)+","+str(humidity)+","+str(read_temp())+"\n"))

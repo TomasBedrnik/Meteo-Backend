@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
-#This has to be replaced with your own image sources
-
-#THIS SCRIPT IS PERIDIOCALLY RUN BY METEO-FRONTEND
-#WITH 1 PARAMETER - PATH TO STORE IMAGES
-#HAS TO WRITE NUMBER OF IMAGES TO OUTPUT
-#IMAGES HAS TO BE NAMED: img0.jpg, img1.jpg ... img10.jpg
+#!/usr/bin/python
+#should be executed every 15 minutes with cron
+#5,20,35,50 * * * * /path/getTemperaturesForecast.py
 import shutil
 import requests
 from datetime import datetime

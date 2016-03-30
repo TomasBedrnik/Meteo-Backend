@@ -1,4 +1,7 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
+#should be executed every 5 minutes with cron
+#/5 * * * * /path/getTemperaturesForecast.py
+
 from datetime import datetime, timedelta
 import numpy as np
 from numpy import genfromtxt

@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# should be started each hour with cron
+#should be executed each hour with cron
 #10 * * * * /path/getTemperaturesForecast.py
 import xml.etree.ElementTree as ET
 import urllib
@@ -16,7 +16,7 @@ msl = 345;
 now = datetime.datetime.now()
 
 #read last data
-dataPath = "/home/john/meteror-Data"
+dataPath = "/home/john/meteor-Data"
 file = "forecast.csv"
 fileOldForecast = now.strftime("oldForecasts-%Y-%m")+".csv"
 data = []
