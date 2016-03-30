@@ -11,6 +11,7 @@ from scipy.interpolate import Rbf
 import sys
 import shutil
 from os import makedirs
+import os.path
 
 if(len(sys.argv) != 2 and len(sys.argv) != 1):
     print("-1");
@@ -21,11 +22,11 @@ if(len(sys.argv) == 1):
 else:
     graphDir = sys.argv[1]
 
-makedirs(graphDir)
-shutil.rmtree(graphDir)
+if os.path.isdir(graphDir):
+    shutil.rmtree(graphDir)
 makedirs(graphDir)
 
-dataPath = "/mnt/zbytek/tmp"
+dataPath = "/home/john/meteor-Data"
 now = datetime.now()
 yesterday = now - timedelta(1)
 

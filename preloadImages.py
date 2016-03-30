@@ -7,6 +7,7 @@ from datetime import datetime
 from os import makedirs
 from PIL import Image
 import sys
+import os.path
 
 if(len(sys.argv) != 2 and len(sys.argv) != 1):
     print("-1");
@@ -17,8 +18,8 @@ if(len(sys.argv) == 1):
 else:
     imageDir = sys.argv[1]
 
-makedirs(imageDir)
-shutil.rmtree(imageDir)
+if os.path.isdir(imageDir):
+    shutil.rmtree(imageDir)
 makedirs(imageDir)
 
 now = datetime.now()
