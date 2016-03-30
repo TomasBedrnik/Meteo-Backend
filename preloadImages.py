@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #should be executed every 15 minutes with cron
-#5,20,35,50 * * * * /path/getTemperaturesForecast.py
+#5,20,35,50 5-22 * * * /path/getTemperaturesForecast.py
 import shutil
 import requests
 from datetime import datetime
