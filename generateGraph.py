@@ -40,6 +40,8 @@ convertfunc = lambda x: (float)((datetime.strptime(x.decode("utf-8"), '%Y-%m-%d 
 dataY = genfromtxt(dataPath+"/"+fileY, delimiter=",",usecols=range(0,4),converters={0:convertfunc})
 dataT = genfromtxt(dataPath+"/"+fileT, delimiter=",",usecols=range(0,4),converters={0:convertfunc})
 
+dataForecast = genfromtxt(dataPath+"/forecast.csv", delimiter=",",usecols=range(0,2),converters={0:convertfunc})
+
 #find index 24 hours back
 index24 = 0
 for i in range(0,len(dataY)):
@@ -52,18 +54,30 @@ def to_time(x, position):
     d = firstDate+timedelta(0,(float)(x))
     return d.strftime('%H:%M')
     
-minT = dataY[index24:,0].min()
-maxT = dataT[len(dataT)-1,0].max()
+minT = dataY[index24,0]
+maxT = dataForecast[len(dataForecast)-1,0]
 
-xnew = np.linspace(minT,maxT,1000)
-temperature = Rbf(np.concatenate((dataY[index24:,0],dataT[:,0]),axis=0), np.concatenate((dataY[index24:,1],dataT[:,1]),axis=0))
-humidity = Rbf(np.concatenate((dataY[index24:,0],dataT[:,0]),axis=0), np.concatenate((dataY[index24:,2],dataT[:,2]),axis=0))
+
+time = np.concatenate((dataY[index24:,0],dataT[:,0]),axis=0)
+temperature = np.concatenate((dataY[index24:,1],dataT[:,1]),axis=0)
+humidity = np.concatenate((dataY[index24:,2],dataT[:,2]),axis=0)
+##THIS NEEDS LOT OF MEMORY - ON RASPBERRY PI = MEMORY ERROR
+#xnew = np.linspace(minT,maxT,1000)
+#temperature = Rbf(time, temperature)
+#humidity = Rbf(a,c)
+#ax1.plot(xnew,temperature(xnew),'g')
+#ax2.plot(xnew,humidity(xnew),'b')
+
+xnew = np.linspace(dataForecast[0,0],maxT,100)
+forecast = Rbf(dataForecast[:,0],dataForecast[:,1])
 
 fig = plt.figure()
 ax1 = fig.add_subplot(1,1,1)
 ax2 = ax1.twinx()
-ax1.plot(xnew,temperature(xnew),'g')
-ax2.plot(xnew,humidity(xnew),'b')
+ax1.plot(time,temperature,'g')
+ax1.plot(dataForecast[:,0],dataForecast[:,1],'+r')
+ax1.plot(xnew,forecast(xnew),'r')
+ax2.plot(time,humidity,'b')
 
 tickLabels = matplotlib.ticker.FuncFormatter(to_time)
 XTicks = [i*1 for i in range(60*60,(int)(maxT+60),60*60*2)]
