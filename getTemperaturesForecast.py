@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #should be executed each hour with cron
-#10 * * * * /path/getTemperaturesForecast.py
+#12 * * * * /path/getTemperaturesForecast.py
 import xml.etree.ElementTree as ET
 import urllib
 import urllib.request
