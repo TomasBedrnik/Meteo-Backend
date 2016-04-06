@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #should be executed every 15 minutes with cron
-#5,20,35,50 5-22 * * * /path/getTemperaturesForecast.py
+#4,19,34,49 5-22 * * * /path/preloadImages.py
 import shutil
 import requests
 from datetime import datetime
@@ -23,8 +23,8 @@ if os.path.isdir(imageDir):
 makedirs(imageDir)
 
 now = datetime.now()
-camImages = [3126,2099,2113,2111,3095,3096,526,317,174,326,434]
-#camImages = []
+#526 = Kozakov webcamlive.cz - broken
+camImages = [3126,2099,2113,2111,3095,3096,317,174,326,434]
 print(str(len(camImages)))
 
 for i in range(0,len(camImages)):
