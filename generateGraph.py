@@ -1,12 +1,13 @@
 #!/usr/bin/python
 #should be executed every 5 minutes with cron
-#/5 * * * * /path/getTemperaturesForecast.py
+#*/5 * * * * /path/generateGraph.py
+import matplotlib
+matplotlib.use('Agg')
 
 from datetime import datetime, timedelta
 import numpy as np
 from numpy import genfromtxt
 import matplotlib.pyplot as plt
-import matplotlib.ticker
 from scipy.interpolate import Rbf
 import sys
 import shutil
@@ -26,7 +27,7 @@ if os.path.isdir(graphDir):
     shutil.rmtree(graphDir)
 makedirs(graphDir)
 
-dataPath = "/home/john/meteor-Data"
+dataPath = "/mnt/zbytek/home/john/meteor-Data"
 now = datetime.now()
 yesterday = now - timedelta(1)
 
