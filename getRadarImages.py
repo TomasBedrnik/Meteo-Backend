@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #should be executed every 10 minutes with cron
-#1,11,21,31,41,51 * * * * /path/getRadarImages.py
+#2,12,22,32,42,52 * * * * /path/getRadarImages.py
 import shutil
 import requests
 from datetime import datetime
