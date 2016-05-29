@@ -14,15 +14,19 @@ if(len(sys.argv) != 2 and len(sys.argv) != 1):
     print("-1");
     sys.exit("Wrong number of parameters ("+str(len(sys.argv))+")")
 
-if(len(sys.argv) == 1):
-    imageDir = "/tmp/Meteo-Backend/radarImages"
-else:
-    imageDir = sys.argv[1]
+imageDir = "/tmp/Meteo-Backend/radarImages"
+now = datetime.utcnow()
+if(len(sys.argv) == 2):
+  tmp = now.strftime("%Y%m%d")
+  now = datetime.strptime(tmp+sys.argv[1], '%Y%m%d%H%M')
+elif(len(sys.argv) == 3):
+  imageDir = sys.argv[2]
+  tmp = now.strftime("%Y%m%d")
+  now = datetime.strptime(tmp+sys.argv[1], '%Y%m%d%H%M')
 
 if (os.path.isdir(imageDir) == False):
   makedirs(imageDir)
 
-now = datetime.utcnow()
 minutes = int(now.strftime("%M"))//10*10;
 minutesLight = int(now.strftime("%M"))//15*15;
 imageURLRadar = "http://radar.bourky.cz/data/pacz2gmaps.z_max3d."+now.strftime("%Y%m%d.%H")+str(minutes).zfill(2)+".0.png";
