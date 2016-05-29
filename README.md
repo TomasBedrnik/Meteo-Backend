@@ -1,5 +1,5 @@
 # Meteo-Backend
-Backend for home made meteo station based on "Fruit" Pi and few cheap sensors
+Backend for home made meteo station based on Raspberry Pi (and other Fruit) with few cheap sensors
 
 - consists of few python scripst
 - each script has comments describing recomended cron settings
@@ -8,3 +8,4 @@ Backend for home made meteo station based on "Fruit" Pi and few cheap sensors
 - forecast from yr.no .xml files
 - images from public web cameras
 - generates graph in .svg using Matplotlib
+- radar images from CHMU - radar.bourky.cz
