@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #should be executed every 10 minutes with cron
-#2,12,22,32,42,52 * * * * /path/getRadarImages.py
+#5,15,25,35,45,55 * * * * /path/getRadarImages.py
 import shutil
 import requests
 from datetime import datetime
@@ -24,8 +24,9 @@ if (os.path.isdir(imageDir) == False):
 
 now = datetime.utcnow()
 minutes = int(now.strftime("%M"))//10*10;
-imageURLLightning = "http://radar.bourky.cz/data/celdn/pacz2gmaps.blesk."+now.strftime("%Y%m%d.%H")+str(minutes).zfill(2)+".png";
+minutesLight = int(now.strftime("%M"))//15*15;
 imageURLRadar = "http://radar.bourky.cz/data/pacz2gmaps.z_max3d."+now.strftime("%Y%m%d.%H")+str(minutes).zfill(2)+".0.png";
+imageURLLightning = "http://radar.bourky.cz/data/celdn/pacz2gmaps.blesk."+now.strftime("%Y%m%d.%H")+str(minutesLight).zfill(2)+".png";
 
 response = requests.get(imageURLLightning, stream=True)
 with open(imageDir+"/lightning"+now.strftime("%Y%m%d.%H")+str(minutes).zfill(2)+".png", "wb") as out_file:
