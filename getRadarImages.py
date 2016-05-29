@@ -28,9 +28,8 @@ if (os.path.isdir(imageDir) == False):
   makedirs(imageDir)
 
 minutes = int(now.strftime("%M"))//10*10;
-minutesLight = int(now.strftime("%M"))//15*15;
 imageURLRadar = "http://radar.bourky.cz/data/pacz2gmaps.z_max3d."+now.strftime("%Y%m%d.%H")+str(minutes).zfill(2)+".0.png";
-imageURLLightning = "http://radar.bourky.cz/data/celdn/pacz2gmaps.blesk."+now.strftime("%Y%m%d.%H")+str(minutesLight).zfill(2)+".png";
+imageURLLightning = "http://radar.bourky.cz/data/celdn/pacz2gmaps.blesk."+now.strftime("%Y%m%d.%H")+str(minutes).zfill(2)+".png";
 
 response = requests.get(imageURLLightning, stream=True)
 with open(imageDir+"/lightning"+now.strftime("%Y%m%d.%H")+str(minutes).zfill(2)+".png", "wb") as out_file:
