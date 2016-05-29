@@ -29,7 +29,7 @@ if os.path.isdir(graphDir):
     shutil.rmtree(graphDir)
 makedirs(graphDir)
 
-dataPath = "/home/john/meteor-Data"
+dataPath = "/mnt/zbytek/home/john/meteor-Data"
 now = datetime.now()
 yesterday = now - timedelta(1)
 
