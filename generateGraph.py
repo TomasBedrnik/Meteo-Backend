@@ -26,7 +26,7 @@ if(len(sys.argv) == 1):
 else:
     graphDir = sys.argv[1]
 
-dataPath = "/mnt/zbytek/home/john/meteor-Data"
+dataPath = "/home/john/meteor-Data"
 now = datetime.now()
 yesterday = now - timedelta(1)
 
@@ -105,18 +105,24 @@ PRECIPITATION_TOTAL_VAL = re.findall('([^,]+)',PRECIPITATION_TOTAL.group(1))
 #ALADIN TIME
 forecastTimeIso = re.search('\"forecastTimeIso\":\"([^\"]+)\",',str(html))
 timeBegString = forecastTimeIso.group(1)
+maxTimeAladin = (now - firstDate).seconds + ((now - firstDate).days * 24*60*60) + 24*60*60;
 aladinTime = []
 for i in range(0,(len(TEMPERATURE_VAL))):
     tmpTime = (datetime.strptime(timeBegString, '%Y-%m-%d %H:%M:%S') + timedelta(0,i*60*60))
-    aladinTime.append((tmpTime - firstDate).seconds + ((tmpTime - firstDate).days * 24*60*60))
-
+    tmp = (tmpTime - firstDate).seconds + ((tmpTime - firstDate).days * 24*60*60);
+    if(tmp <= maxTimeAladin):
+        aladinTime.append(tmp)
 
 precipation = []
-for i in range(0,(len(PRECIPITATION_TOTAL_VAL))):
+for i in range(0,(len(aladinTime))):
     precipation.append(float(PRECIPITATION_TOTAL_VAL[i]))
-maxTimeAladin = (now - firstDate).seconds + ((now - firstDate).days * 24*60*60) + 24*60*60;
+    
+temperatureAladin = []
+for i in range(0,(len(aladinTime))):
+    temperatureAladin.append(float(TEMPERATURE_VAL[i]))
+
 xAladin = np.linspace(dataForecast[0,0],maxTimeAladin,100)
-aladinForecast = Rbf(aladinTime,TEMPERATURE_VAL)
+aladinForecast = Rbf(aladinTime,temperatureAladin)
 
 xForecast = np.linspace(dataForecast[0,0],maxTime,100)
 forecast = Rbf(dataForecast[:,0],dataForecast[:,1])
@@ -137,7 +143,7 @@ ax1.plot(time,temperature,'g')
 
 ax1.plot(dataForecast[:,0],dataForecast[:,1],'+r')
 ax1.plot(xForecast,forecast(xForecast),'r')
-ax1.plot(aladinTime,TEMPERATURE_VAL,'+m')
+ax1.plot(aladinTime,temperatureAladin,'+m')
 ax1.plot(xAladin,aladinForecast(xAladin),'m')
 #humidity
 ax2.plot(time,humidity,'b')
@@ -150,6 +156,9 @@ ax1.set_xticks(XTicks)
 ax1.set_xlim(minTime,maxTimeAladin)
 ax1.xaxis.set_major_formatter(tickLabels)
 ax1.set_ylabel("Temperature [°C]")
+
+ax2.set_xlim(minTime,maxTimeAladin)
+ax3.set_xlim(minTime,maxTimeAladin)
 
 ax3.set_ylim(0,max(precipation)*1.2)
 ax3.set_ylabel("Precipation [mm/h]")
@@ -164,4 +173,4 @@ if os.path.isdir(graphDir):
     shutil.rmtree(graphDir)
 makedirs(graphDir)
 
-fig.savefig(graphDir+'/graph1.jpg', transparent=True)
+fig.savefig(graphDir+'/graph1.svg', transparent=True,bbox_inches='tight')
