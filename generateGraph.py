@@ -26,7 +26,7 @@ if(len(sys.argv) == 1):
 else:
     graphDir = sys.argv[1]
 
-dataPath = "/home/john/meteor-Data"
+dataPath = "/mnt/zbytek/home/john/meteor-Data"
 now = datetime.now()
 yesterday = now - timedelta(1)
 
@@ -121,7 +121,7 @@ temperatureAladin = []
 for i in range(0,(len(aladinTime))):
     temperatureAladin.append(float(TEMPERATURE_VAL[i]))
 
-xAladin = np.linspace(dataForecast[0,0],maxTimeAladin,100)
+xAladin = np.linspace(aladinTime[0],maxTimeAladin,100)
 aladinForecast = Rbf(aladinTime,temperatureAladin)
 
 xForecast = np.linspace(dataForecast[0,0],maxTime,100)
