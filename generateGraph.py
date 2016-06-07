@@ -15,6 +15,8 @@ import os.path
 import re
 import urllib.request
 
+height = 355
+
 yesterdayData = False;
 
 if(len(sys.argv) != 2 and len(sys.argv) != 1):
@@ -26,7 +28,7 @@ if(len(sys.argv) == 1):
 else:
     graphDir = sys.argv[1]
 
-dataPath = "/mnt/zbytek/home/john/meteor-Data"
+dataPath = "/home/john/meteor-Data"
 now = datetime.now()
 yesterday = now - timedelta(1)
 
@@ -46,9 +48,9 @@ else:
 convertfunc = lambda x: (float)((datetime.strptime(x.decode("utf-8"), '%Y-%m-%d %H:%M:%S')-firstDate).seconds + (datetime.strptime(x.decode("utf-8"), '%Y-%m-%d %H:%M:%S')-firstDate).days * 24*60*60)
 
 if os.path.isfile(dataPath+"/"+fileY):
-    dataY = np.genfromtxt(dataPath+"/"+fileY, delimiter=",",usecols=range(0,4),converters={0:convertfunc})
+    dataY = np.genfromtxt(dataPath+"/"+fileY, delimiter=",",usecols=range(0,7),converters={0:convertfunc})
     yesterdayData = True;
-dataT = np.genfromtxt(dataPath+"/"+fileT, delimiter=",",usecols=range(0,4),converters={0:convertfunc})
+dataT = np.genfromtxt(dataPath+"/"+fileT, delimiter=",",usecols=range(0,7),converters={0:convertfunc})
 
 dataForecast = np.genfromtxt(dataPath+"/forecast.csv", delimiter=",",usecols=range(0,2),converters={0:convertfunc})
 
@@ -76,10 +78,12 @@ if(yesterdayData):
     time = np.concatenate((dataY[index24:,0],dataT[:,0]),axis=0)
     temperature = np.concatenate((dataY[index24:,1],dataT[:,1]),axis=0)
     humidity = np.concatenate((dataY[index24:,2],dataT[:,2]),axis=0)
+    pressure = np.concatenate((dataY[index24:,6],dataT[:,6]),axis=0)
 else:
     time = dataT[:,0]
     temperature = dataT[:,1]
     humidity = dataT[:,2]
+    pressure = dataT[:,6]
 ##THIS NEEDS LOT OF MEMORY - ON RASPBERRY PI = MEMORY ERROR
 #xnew = np.linspace(minTime,maxTime,1000)
 #temperature = Rbf(time, temperature)
@@ -133,9 +137,12 @@ ax1 = fig.add_subplot(1,1,1)
 #ax1 = host_subplot(111, axes_class=AA.Axes)
 ax2 = ax1.twinx()
 ax3 = ax1.twinx()
+ax4 = ax1.twinx()
 
 #move Precipation axis
 ax3.spines['right'].set_position(('axes', 1.15))
+#move Precipation axis
+ax4.spines['right'].set_position(('axes', 1.25))
 
 #add data
 #temperatures
@@ -149,6 +156,10 @@ ax1.plot(xAladin,aladinForecast(xAladin),'m')
 ax2.plot(time,humidity,'b')
 #precipation
 ax3.bar(aladinTime,precipation,2500,color='#03FDFD')
+#pressure
+pressureSeaLevel = pressure/100 + (height/8.3)
+ax4.plot(time,pressureSeaLevel,'#FF9500')
+ax4.axhline(1013.25,color='#875105')
 
 tickLabels = matplotlib.ticker.FuncFormatter(to_time)
 XTicks = [i*1 for i in range(60*60,(int)(maxTimeAladin+60),60*60*4)]
@@ -159,10 +170,18 @@ ax1.set_ylabel("Temperature [°C]")
 
 ax2.set_xlim(minTime,maxTimeAladin)
 ax3.set_xlim(minTime,maxTimeAladin)
+ax4.set_xlim(minTime,maxTimeAladin)
 
-ax3.set_ylim(0,max(precipation)*1.2)
+maxPrecipation = max(precipation);
+if maxPrecipation < 7:
+    maxPrecipation = 7
+else:
+    maxPrecipation * 1.2
+ax3.set_ylim(0,maxPrecipation)
 ax3.set_ylabel("Precipation [mm/h]")
-ax3.set
+
+ax4.set_ylabel("Mean sea level pressure [hPa]")
+
 ax2.set_ylabel("Humidity [%]")
 ax2.set_ylim(0,105)
 
