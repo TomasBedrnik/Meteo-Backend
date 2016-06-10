@@ -83,7 +83,7 @@ if(sys.argv[1] == "-add"):
         
     fileInstance = searchTextFile(fileName,subFolder['id'])
     content = fileInstance.GetContentString()
-    fileInstance.SetContentString(content+"\n"+text)
+    fileInstance.SetContentString(content+text+"\n")
     fileInstance.Upload()
     
 #IMAGE
