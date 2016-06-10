@@ -9,6 +9,7 @@ from PIL import Image
 import sys
 import os.path
 import time
+import inspect
 
 if(len(sys.argv) != 2 and len(sys.argv) != 1):
     print("-1");
@@ -32,12 +33,14 @@ imageURLRadar = "http://radar.bourky.cz/data/pacz2gmaps.z_max3d."+now.strftime("
 imageURLLightning = "http://radar.bourky.cz/data/celdn/pacz2gmaps.blesk."+now.strftime("%Y%m%d.%H")+str(minutes).zfill(2)+".png";
 
 response = requests.get(imageURLLightning, stream=True)
-with open(imageDir+"/lightning"+now.strftime("%Y%m%d.%H")+str(minutes).zfill(2)+".png", "wb") as out_file:
+filenameLightning = "lightning"+now.strftime("%Y%m%d.%H")+str(minutes).zfill(2)+".png"
+with open(imageDir+"/"+filenameLightning, "wb") as out_file:
   shutil.copyfileobj(response.raw, out_file)
 del response
 
 response = requests.get(imageURLRadar, stream=True)
-with open(imageDir+"/radar"+now.strftime("%Y%m%d.%H")+str(minutes).zfill(2)+".png", "wb") as out_file:
+filenameRadar = "radar"+now.strftime("%Y%m%d.%H")+str(minutes).zfill(2)+".png"
+with open(imageDir+"/"+filenameRadar, "wb") as out_file:
   shutil.copyfileobj(response.raw, out_file)
 del response
 
@@ -47,3 +50,9 @@ for f in os.listdir(imageDir):
   if os.stat(f).st_mtime < now - 2*60*60:
     if os.path.isfile(f):
       os.remove(os.path.join(imageDir, f))
+
+#write to Google Drive
+path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+os.chdir(path)
+os.system(os.path.join(path, 'uploadToDrive.py') + " -replace "+filenameLightning+" radar "+os.path.join(imageDir, filenameLightning))
+os.system(os.path.join(path, 'uploadToDrive.py') + " -replace "+filenameRadar+" radar "+os.path.join(imageDir, filenameRadar))
