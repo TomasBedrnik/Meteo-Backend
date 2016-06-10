@@ -52,9 +52,9 @@ pressure = sensor.read_pressure()
 #print 'Temp = {0:0.2f} *C'.format(temp)
 #print 'Pressure = {0:0.2f} Pa'.format(pressure)
 filename = d.strftime("%Y-%m-%d")+".csv"
-dataString = d.strftime("%Y-%m-%d %H:%M:%S,"+str(temperature)+","+str(humidity)+","+str(read_temp(device_file_1))+","+str(read_temp(device_file_2))+","+str(temp)+","+str(pressure)+"\n")
+dataString = d.strftime("%Y-%m-%d %H:%M:%S,"+str(temperature)+","+str(humidity)+","+str(read_temp(device_file_1))+","+str(read_temp(device_file_2))+","+str(temp)+","+str(pressure))
 with open("/home/john/meteor-Data/"+filename, "a") as f:
-    f.write(dataString)
+    f.write(dataString+"\n")
 
 path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 os.chdir(path)
