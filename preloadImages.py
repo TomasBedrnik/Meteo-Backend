@@ -8,6 +8,7 @@ from os import makedirs
 from PIL import Image
 import sys
 import os.path
+import inspect
 
 if(len(sys.argv) != 2 and len(sys.argv) != 1):
     print("-1");
@@ -46,3 +47,8 @@ for i in range(0,len(camImages)):
         area = img.crop(box)
         area.save(imageDir+"/img"+str(i)+".jpg", 'jpeg')
         img.close()
+
+path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+os.chdir(path)
+for i in range(0,len(camImages)):        
+    os.system(os.path.join(path, 'uploadToDrive.py') + " -replace img"+str(i)+".jpg images "+imageDir+"/img"+str(i)+".jpg")
