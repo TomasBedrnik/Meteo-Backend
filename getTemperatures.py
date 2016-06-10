@@ -58,4 +58,4 @@ with open("/home/john/meteor-Data/"+filename, "a") as f:
 
 path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 os.chdir(path)
-os.system(os.path.join(path, 'uploadToDrive.py') + " -add "+filename+" test \""+dataString+"\"")
+os.system(os.path.join(path, 'uploadToDrive.py') + " -add "+filename+" data \""+dataString+"\"")
