@@ -192,7 +192,7 @@ if os.path.isdir(graphDir):
     shutil.rmtree(graphDir)
 makedirs(graphDir)
 
-#fig.savefig(graphDir+'/graph1.svg', transparent=True,bbox_inches='tight')
+fig.savefig(graphDir+'/graph1.svg', transparent=True,bbox_inches='tight')
 #scrpipt = os.path.join(os.getcwd(), 'uploadToDrive.py')
 #string = scrpipt + " -replace graph1.svg graph "+graphDir+"/graph1.svg"
 #print(string)
