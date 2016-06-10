@@ -13,6 +13,8 @@ import Adafruit_DHT
 #Adafruit_BMP has to be installed -> https://github.com/adafruit/Adafruit_Python_BMP.git
 import Adafruit_BMP.BMP085 as BMP085
 
+import inspect
+
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
 
@@ -49,6 +51,11 @@ pressure = sensor.read_pressure()
 
 #print 'Temp = {0:0.2f} *C'.format(temp)
 #print 'Pressure = {0:0.2f} Pa'.format(pressure)
+filename = d.strftime("%Y-%m-%d")+".csv"
+dataString = d.strftime("%Y-%m-%d %H:%M:%S,"+str(temperature)+","+str(humidity)+","+str(read_temp(device_file_1))+","+str(read_temp(device_file_2))+","+str(temp)+","+str(pressure)+"\n")
+with open("/home/john/meteor-Data/"+filename, "a") as f:
+    f.write(dataString)
 
-with open("/home/john/meteor-Data/"+d.strftime("%Y-%m-%d")+".csv", "a") as f:
-    f.write(d.strftime("%Y-%m-%d %H:%M:%S,"+str(temperature)+","+str(humidity)+","+str(read_temp(device_file_1))+","+str(read_temp(device_file_2))+","+str(temp)+","+str(pressure)+"\n"))
+path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+os.chdir(path)
+os.system(os.path.join(path, 'uploadToDrive.py') + " -add "+filename+" test \""+dataString+"\"")
