@@ -48,7 +48,7 @@ for i in range(0,len(camImages)):
         area.save(imageDir+"/img"+str(i)+".jpg", 'jpeg')
         img.close()
 
-path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-os.chdir(path)
-for i in range(0,len(camImages)):        
-    os.system(os.path.join(path, 'uploadToDrive.py') + " -replace img"+str(i)+".jpg images "+imageDir+"/img"+str(i)+".jpg")
+#path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+#os.chdir(path)
+#for i in range(0,len(camImages)):        
+#    os.system(os.path.join(path, 'uploadToDrive.py') + " -replace img"+str(i)+".jpg images "+imageDir+"/img"+str(i)+".jpg")

@@ -195,6 +195,6 @@ makedirs(graphDir)
 
 fig.savefig(graphDir+'/graph1.svg', transparent=True,bbox_inches='tight')
 
-path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-os.chdir(path)
-os.system(os.path.join(path, 'uploadToDrive.py') + " -replace graph1.svg graph "+os.path.join(graphDir, 'graph1.svg'))
+#path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+#os.chdir(path)
+#os.system(os.path.join(path, 'uploadToDrive.py') + " -replace graph1.svg graph "+os.path.join(graphDir, 'graph1.svg'))

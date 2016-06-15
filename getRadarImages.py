@@ -52,7 +52,7 @@ for f in os.listdir(imageDir):
       os.remove(os.path.join(imageDir, f))
 
 #write to Google Drive
-path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-os.chdir(path)
-os.system(os.path.join(path, 'uploadToDrive.py') + " -replace "+filenameLightning+" radar "+os.path.join(imageDir, filenameLightning))
-os.system(os.path.join(path, 'uploadToDrive.py') + " -replace "+filenameRadar+" radar "+os.path.join(imageDir, filenameRadar))
+#path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+#os.chdir(path)
+#os.system(os.path.join(path, 'uploadToDrive.py') + " -replace "+filenameLightning+" radar "+os.path.join(imageDir, filenameLightning))
+#os.system(os.path.join(path, 'uploadToDrive.py') + " -replace "+filenameRadar+" radar "+os.path.join(imageDir, filenameRadar))

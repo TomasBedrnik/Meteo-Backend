@@ -56,6 +56,6 @@ dataString = d.strftime("%Y-%m-%d %H:%M:%S,"+str(temperature)+","+str(humidity)+
 with open("/home/john/meteor-Data/"+filename, "a") as f:
     f.write(dataString+"\n")
 
-path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-os.chdir(path)
-os.system(os.path.join(path, 'uploadToDrive.py') + " -add "+filename+" data \""+dataString+"\"")
+#path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+#os.chdir(path)
+#os.system(os.path.join(path, 'uploadToDrive.py') + " -add "+filename+" data \""+dataString+"\"")
