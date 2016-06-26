@@ -8,25 +8,31 @@ from os import makedirs
 from PIL import Image
 import sys
 import os.path
-import inspect
+import glob
+#import inspect
 
 if(len(sys.argv) != 2 and len(sys.argv) != 1):
     print("-1");
     sys.exit("Wrong number of parameters ("+str(len(sys.argv))+")")
 
-if(len(sys.argv) == 1):
-    imageDir = "/tmp/Meteo-Backend/images"
-else:
-    imageDir = sys.argv[1]
+imageDir = "/tmp/Meteo-Backend/images"
+first = False
+
+if(len(sys.argv) == 2 and sys.argv[1] == "-first"):
+    first = True
+
+now = datetime.now()
+camImages = [3126,2099,2113,2111,3095,3096,317,174,326,434]
+print(str(len(camImages)))
+
+#with firt run = run from Meteo-Frontend, check number of downloaded images -> if is equal to expected val., exit
+if(first == True):
+  if(len(camImages) == len(glob.glob(imageDir+"/*"))):
+    sys.exit();  
 
 if os.path.isdir(imageDir):
     shutil.rmtree(imageDir)
 makedirs(imageDir)
-
-now = datetime.now()
-#526 = Kozakov webcamlive.cz - broken
-camImages = [3126,2099,2113,2111,3095,3096,317,174,326,434]
-print(str(len(camImages)))
 
 for i in range(0,len(camImages)):
     if(i < 6):
