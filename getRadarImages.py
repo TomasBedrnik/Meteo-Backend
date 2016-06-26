@@ -44,10 +44,11 @@ with open(imageDir+"/"+filenameRadar, "wb") as out_file:
   shutil.copyfileobj(response.raw, out_file)
 del response
 
+#delete old images
 now = time.time()
 for f in os.listdir(imageDir):
   f = os.path.join(imageDir, f)
-  if os.stat(f).st_mtime < now - 2*60*60:
+  if os.stat(f).st_mtime < now - 3*60*60:
     if os.path.isfile(f):
       os.remove(os.path.join(imageDir, f))
 
