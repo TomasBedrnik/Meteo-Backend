@@ -22,12 +22,6 @@ pin = 27
 humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, pin)
 d = datetime.datetime.now()
 
-base_dir = '/sys/bus/w1/devices/'
-device_folder_1 = glob.glob(base_dir + '28*')[0]
-device_folder_2 = glob.glob(base_dir + '28*')[1]
-device_file_1 = device_folder_1 + '/w1_slave'
-device_file_2 = device_folder_2 + '/w1_slave'
-
 def read_temp_raw(device_file):
     f = open(device_file, 'r')
     lines = f.readlines()
@@ -45,6 +39,18 @@ def read_temp(device_file):
         temp_c = float(temp_string) / 1000.0
         return temp_c
 
+base_dir = '/sys/bus/w1/devices/'
+temperature1 = 0;
+temperature2 = 0;
+if(len(glob.glob(base_dir + '28*')) >= 2):
+  device_folder_1 = glob.glob(base_dir + '28*')[0]
+  device_folder_2 = glob.glob(base_dir + '28*')[1]
+  device_file_1 = device_folder_1 + '/w1_slave'
+  device_file_2 = device_folder_2 + '/w1_slave'
+  temperature1 = read_temp(device_file_1);
+  temperature2 = read_temp(device_file_2);
+
+
 sensor = BMP085.BMP085()
 temp = sensor.read_temperature()
 pressure = sensor.read_pressure()
@@ -52,7 +58,7 @@ pressure = sensor.read_pressure()
 #print 'Temp = {0:0.2f} *C'.format(temp)
 #print 'Pressure = {0:0.2f} Pa'.format(pressure)
 filename = d.strftime("%Y-%m-%d")+".csv"
-dataString = d.strftime("%Y-%m-%d %H:%M:%S,"+str(temperature)+","+str(humidity)+","+str(read_temp(device_file_1))+","+str(read_temp(device_file_2))+","+str(temp)+","+str(pressure))
+dataString = d.strftime("%Y-%m-%d %H:%M:%S,"+str(temperature)+","+str(humidity)+","+str(temperature1)+","+str(temperature2)+","+str(temp)+","+str(pressure))
 with open("/home/john/meteor-Data/"+filename, "a") as f:
     f.write(dataString+"\n")
 
