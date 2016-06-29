@@ -14,7 +14,7 @@ from os import makedirs
 import os.path
 import re
 import urllib.request
-import inspect
+#import inspect
 
 height = 355
 
@@ -78,13 +78,16 @@ maxTime = dataForecast[len(dataForecast)-1,0]
 if(yesterdayData):
     time = np.concatenate((dataY[index24:,0],dataT[:,0]),axis=0)
     temperature = np.concatenate((dataY[index24:,1],dataT[:,1]),axis=0)
+    temperature2 = np.concatenate((dataY[index24:,3],dataT[:,3]),axis=0)
     humidity = np.concatenate((dataY[index24:,2],dataT[:,2]),axis=0)
     pressure = np.concatenate((dataY[index24:,6],dataT[:,6]),axis=0)
 else:
     time = dataT[:,0]
     temperature = dataT[:,1]
+    temperature2 = dataT[:,3]
     humidity = dataT[:,2]
     pressure = dataT[:,6]
+    
 ##THIS NEEDS LOT OF MEMORY - ON RASPBERRY PI = MEMORY ERROR
 #xnew = np.linspace(minTime,maxTime,1000)
 #temperature = Rbf(time, temperature)
@@ -141,13 +144,14 @@ ax3 = ax1.twinx()
 ax4 = ax1.twinx()
 
 #move Precipation axis
-ax3.spines['right'].set_position(('axes', 1.15))
+ax3.spines['right'].set_position(('axes', 1.115))
 #move Precipation axis
-ax4.spines['right'].set_position(('axes', 1.25))
+ax4.spines['right'].set_position(('axes', 1.195))
 
 #add data
 #temperatures
 ax1.plot(time,temperature,'g')
+ax1.plot(time,temperature2,'#00ff00')
 
 ax1.plot(dataForecast[:,0],dataForecast[:,1],'+r')
 ax1.plot(xForecast,forecast(xForecast),'r')
@@ -182,6 +186,8 @@ ax3.set_ylim(0,maxPrecipation)
 ax3.set_ylabel("Precipation [mm/h]")
 
 ax4.set_ylabel("Mean sea level pressure [hPa]")
+y_formatter = matplotlib.ticker.ScalarFormatter(useOffset=False)
+ax4.yaxis.set_major_formatter(y_formatter)
 
 ax2.set_ylabel("Humidity [%]")
 ax2.set_ylim(0,105)
@@ -189,11 +195,21 @@ ax2.set_ylim(0,105)
 #ax1.axis["bottom"].set_axis_direction("right")
 fig.autofmt_xdate()
 
-if os.path.isdir(graphDir):
-    shutil.rmtree(graphDir)
-makedirs(graphDir)
+#create dir if not exists 
+if not(os.path.isdir(graphDir)):
+    makedirs(graphDir)
 
-fig.savefig(graphDir+'/graph1.svg', transparent=True,bbox_inches='tight')
+#check filename - if exists, create second
+filename1 = 'graph1.svg'
+filename2 = 'graph2.svg'
+if os.path.isfile(graphDir+'/'+filename1):
+    filename1 = 'graph2.svg'
+    filename2 = 'graph1.svg'
+
+fig.savefig(graphDir+'/'+filename1, transparent=True,bbox_inches='tight')
+
+if os.path.isfile(graphDir+'/'+filename2):
+    os.remove(graphDir+'/'+filename2)
 
 #path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 #os.chdir(path)
