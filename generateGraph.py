@@ -201,16 +201,19 @@ if not(os.path.isdir(graphDir)):
 
 #check filename - if exists, create second
 filename1 = 'graph1.svg'
-filename2 = 'graph2.svg'
-if os.path.isfile(graphDir+'/'+filename1):
-    filename1 = 'graph2.svg'
-    filename2 = 'graph1.svg'
+filename2 = 'graphTmp.svg'
 
-fig.savefig(graphDir+'/'+filename1, transparent=True,bbox_inches='tight')
-
+#remove existing filename1
 if os.path.isfile(graphDir+'/'+filename2):
     os.remove(graphDir+'/'+filename2)
+    
+fig.savefig(graphDir+'/'+filename2, transparent=True,bbox_inches='tight')
 
+#remove existing filename1
+if os.path.isfile(graphDir+'/'+filename1):
+    os.remove(graphDir+'/'+filename1)
+    
+os.rename(graphDir+'/'+filename2, graphDir+'/'+filename1)
 #path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 #os.chdir(path)
 #os.system(os.path.join(path, 'uploadToDrive.py') + " -replace graph1.svg graph "+os.path.join(graphDir, 'graph1.svg'))
