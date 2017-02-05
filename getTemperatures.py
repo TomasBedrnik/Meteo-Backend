@@ -17,6 +17,8 @@ import inspect
 
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
+os.system('modprobe i2c-bcm2708')
+os.system('modprobe i2c-dev')
 
 pin = 27
 humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, pin)
@@ -39,16 +41,25 @@ def read_temp(device_file):
         temp_c = float(temp_string) / 1000.0
         return temp_c
 
-base_dir = '/sys/bus/w1/devices/'
-temperature1 = 0;
-temperature2 = 0;
-if(len(glob.glob(base_dir + '28*')) >= 2):
-  device_folder_1 = glob.glob(base_dir + '28*')[0]
-  device_folder_2 = glob.glob(base_dir + '28*')[1]
-  device_file_1 = device_folder_1 + '/w1_slave'
-  device_file_2 = device_folder_2 + '/w1_slave'
-  temperature1 = read_temp(device_file_1);
-  temperature2 = read_temp(device_file_2);
+#85 is default temperature it send for first touch -> it is ignored in graph
+temperature1 = 85;
+temperature2 = 85;
+#Hardcode address -> will work if one of them isnt working
+path = '/sys/bus/w1/devices/28-8000000355d4/w1_slave'
+if os.path.isfile(path) :
+    temperature1 = read_temp(path);
+path = '/sys/bus/w1/devices/28-800000035d9a/w1_slave'
+if os.path.isfile(path) :
+    temperature2 = read_temp(path);
+
+#base_dir = '/sys/bus/w1/devices/'
+#if(len(glob.glob(base_dir + '28*')) >= 2):
+#  device_folder_1 = glob.glob(base_dir + '28*')[0]
+#  device_folder_2 = glob.glob(base_dir + '28*')[1]
+#  device_file_1 = device_folder_1 + '/w1_slave'
+#  device_file_2 = device_folder_2 + '/w1_slave'
+#  temperature1 = read_temp(device_file_1);
+#  temperature2 = read_temp(device_file_2);
 
 
 sensor = BMP085.BMP085()
@@ -59,7 +70,7 @@ pressure = sensor.read_pressure()
 #print 'Pressure = {0:0.2f} Pa'.format(pressure)
 filename = d.strftime("%Y-%m-%d")+".csv"
 dataString = d.strftime("%Y-%m-%d %H:%M:%S,"+str(temperature)+","+str(humidity)+","+str(temperature1)+","+str(temperature2)+","+str(temp)+","+str(pressure))
-with open("/home/john/meteor-Data/"+filename, "a") as f:
+with open("/home/beda/meteor-Data/"+filename, "a") as f:
     f.write(dataString+"\n")
 
 #path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
