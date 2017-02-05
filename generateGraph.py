@@ -28,7 +28,7 @@ if(len(sys.argv) == 1):
 else:
     graphDir = sys.argv[1]
 
-#Get Data Directory
+
 p = os.path.dirname(os.path.abspath(__file__)).strip("/").split('/')
 dataPath = "/"+p[0]+"/"+p[1]+"/meteor-Data"
 
@@ -111,39 +111,48 @@ for i in range(0,len(temperature2)):
 lat = 50.5970683;
 lon = 15.3604894;
 url = "http://aladinonline.androworks.org/get_data.php?latitude="+str(lat)+"&longitude="+str(lon);
-response = urllib.request.urlopen(url)
-html = response.read()
+try:
+    response = urllib.request.urlopen(url)
+    html = response.read()
     
-#TEMPERATURE FROM ALADIN
-TEMPERATURE = re.search('\"TEMPERATURE":\[([^\[]+)\],',str(html))
-TEMPERATURE_VAL = re.findall('([^,]+)',TEMPERATURE.group(1))
+    #TEMPERATURE FROM ALADIN
+    TEMPERATURE = re.search('\"TEMPERATURE":\[([^\[]+)\],',str(html))
+    TEMPERATURE_VAL = re.findall('([^,]+)',TEMPERATURE.group(1))
 
-#PRECIPATION FROM ALADIN
-PRECIPITATION_TOTAL = re.search('\"PRECIPITATION_TOTAL":\[([^\[]+)\],',str(html))
-PRECIPITATION_TOTAL_VAL = re.findall('([^,]+)',PRECIPITATION_TOTAL.group(1))
+    #PRECIPATION FROM ALADIN
+    PRECIPITATION_TOTAL = re.search('\"PRECIPITATION_TOTAL":\[([^\[]+)\],',str(html))
+    PRECIPITATION_TOTAL_VAL = re.findall('([^,]+)',PRECIPITATION_TOTAL.group(1))
 
-#ALADIN TIME
-forecastTimeIso = re.search('\"forecastTimeIso\":\"([^\"]+)\",',str(html))
-timeBegString = forecastTimeIso.group(1)
-maxTimeAladin = (now - firstDate).seconds + ((now - firstDate).days * 24*60*60) + 24*60*60;
-aladinTime = []
-for i in range(0,(len(TEMPERATURE_VAL))):
-    tmpTime = (datetime.strptime(timeBegString, '%Y-%m-%d %H:%M:%S') + timedelta(0,i*60*60))
-    tmp = (tmpTime - firstDate).seconds + ((tmpTime - firstDate).days * 24*60*60);
-    if(tmp <= maxTimeAladin):
-        aladinTime.append(tmp)
+    #ALADIN TIME
+    forecastTimeIso = re.search('\"forecastTimeIso\":\"([^\"]+)\",',str(html))
+    timeBegString = forecastTimeIso.group(1)
+    maxTimeAladin = (now - firstDate).seconds + ((now - firstDate).days * 24*60*60) + 24*60*60;
+    aladinTime = []
+    for i in range(0,(len(TEMPERATURE_VAL))):
+        tmpTime = (datetime.strptime(timeBegString, '%Y-%m-%d %H:%M:%S') + timedelta(0,i*60*60))
+        tmp = (tmpTime - firstDate).seconds + ((tmpTime - firstDate).days * 24*60*60);
+        if(tmp <= maxTimeAladin):
+            aladinTime.append(tmp)
 
-precipation = []
-for i in range(0,(len(aladinTime))):
-    precipation.append(float(PRECIPITATION_TOTAL_VAL[i]))
+    precipation = []
+    for i in range(0,(len(aladinTime))):
+        precipation.append(float(PRECIPITATION_TOTAL_VAL[i]))
     
-temperatureAladin = []
-for i in range(0,(len(aladinTime))):
-    temperatureAladin.append(float(TEMPERATURE_VAL[i]))
+    temperatureAladin = []
+    for i in range(0,(len(aladinTime))):
+        temperatureAladin.append(float(TEMPERATURE_VAL[i]))
 
-xAladin = np.linspace(aladinTime[0],maxTimeAladin,100)
-aladinForecast = Rbf(aladinTime,temperatureAladin)
-
+    xAladin = np.linspace(aladinTime[0],maxTimeAladin,100)
+    aladinForecast = Rbf(aladinTime,temperatureAladin)
+    
+except :
+    print("Adroworks not responding")
+    aladinTime = []
+    temperatureAladin = []
+    xAladin = []
+    precipation = []
+    maxTimeAladin = dataForecast[:,0][-1]
+    
 xForecast = np.linspace(dataForecast[0,0],maxTime,100)
 forecast = Rbf(dataForecast[:,0],dataForecast[:,1])
 
@@ -167,8 +176,9 @@ ax1.plot(timeMA,temperature2MA,'#00ff00')
 
 ax1.plot(dataForecast[:,0],dataForecast[:,1],'+r')
 ax1.plot(xForecast,forecast(xForecast),'r')
-ax1.plot(aladinTime,temperatureAladin,'+m')
-ax1.plot(xAladin,aladinForecast(xAladin),'m')
+if(len(aladinTime) > 0):
+    ax1.plot(aladinTime,temperatureAladin,'+m')
+    ax1.plot(xAladin,aladinForecast(xAladin),'m')
 #humidity
 ax2.plot(time,humidity,'b')
 #precipation
@@ -193,11 +203,12 @@ ax2.set_xlim(minTime,maxTimeAladin)
 ax3.set_xlim(minTime,maxTimeAladin)
 ax4.set_xlim(minTime,maxTimeAladin)
 
-maxPrecipation = max(precipation);
-if maxPrecipation < 7:
-    maxPrecipation = 7
-else:
-    maxPrecipation * 1.2
+
+maxPrecipation = 7
+if(len(precipation) > 0):
+    maxPrecipation = max(precipation);
+    if maxPrecipation > 7:
+        maxPrecipation * 1.2
 
 ax3.spines['right'].set_color('#03FDFD')
 ax3.yaxis.label.set_color('#03FDFD')
