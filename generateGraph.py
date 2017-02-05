@@ -29,7 +29,7 @@ if(len(sys.argv) == 1):
 else:
     graphDir = sys.argv[1]
 
-dataPath = "/home/john/meteor-Data"
+dataPath = "/home/beda/meteor-Data"
 now = datetime.now()
 yesterday = now - timedelta(1)
 

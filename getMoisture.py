@@ -62,7 +62,7 @@ line = d.strftime("%Y-%m-%d %H:%M:%S,")+str(moisture_1_level)+","+str(moisture_1
 #print(line)
 #print("1 = "+str(moisture_1_level)+ " - " +str(moisture_1_volts))
 #print("2 = "+str(moisture_2_level)+ " - " +str(moisture_2_volts))
-with open("/home/john/meteor-Data/moisture.csv", "a") as f:
+with open("/home/beda/meteor-Data/moisture.csv", "a") as f:
     f.write(line)
 # Wait before repeating loop
 GPIO.output(pin,False) 

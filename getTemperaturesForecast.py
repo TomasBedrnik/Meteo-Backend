@@ -16,7 +16,7 @@ msl = 345;
 now = datetime.datetime.now()
 
 #read last data
-dataPath = "/home/john/meteor-Data"
+dataPath = "/home/beda/meteor-Data"
 file = "forecast.csv"
 fileOldForecast = now.strftime("oldForecasts-%Y-%m")+".csv"
 data = []
