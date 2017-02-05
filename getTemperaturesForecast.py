@@ -16,7 +16,9 @@ msl = 345;
 now = datetime.datetime.now()
 
 #read last data
-dataPath = "/home/beda/meteor-Data"
+#Get Data Directory
+p = os.path.dirname(os.path.abspath(__file__)).strip("/").split('/')
+dataPath = "/"+p[0]+"/"+p[1]+"/meteor-Data"
 file = "forecast.csv"
 fileOldForecast = now.strftime("oldForecasts-%Y-%m")+".csv"
 data = []

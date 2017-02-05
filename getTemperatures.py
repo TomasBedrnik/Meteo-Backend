@@ -70,7 +70,14 @@ pressure = sensor.read_pressure()
 #print 'Pressure = {0:0.2f} Pa'.format(pressure)
 filename = d.strftime("%Y-%m-%d")+".csv"
 dataString = d.strftime("%Y-%m-%d %H:%M:%S,"+str(temperature)+","+str(humidity)+","+str(temperature1)+","+str(temperature2)+","+str(temp)+","+str(pressure))
-with open("/home/beda/meteor-Data/"+filename, "a") as f:
+p = os.path.dirname(os.path.abspath(__file__)).strip("/").split('/')
+dataPath = "/"+p[0]+"/"+p[1]+"/meteor-Data"
+
+#create dir if not exists 
+if not(os.path.isdir(dataPath)):
+    makedirs(dataPath)
+
+with open(dataPath+"/"+filename, "a") as f:
     f.write(dataString+"\n")
 
 #path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
