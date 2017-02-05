@@ -9,7 +9,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import Rbf
 import sys
-import shutil
 from os import makedirs
 import os.path
 import re
@@ -29,7 +28,10 @@ if(len(sys.argv) == 1):
 else:
     graphDir = sys.argv[1]
 
-dataPath = "/home/beda/meteor-Data"
+#Get Data Directory
+p = os.path.dirname(os.path.abspath(__file__)).strip("/").split('/')
+dataPath = "/"+p[0]+"/"+p[1]+"/meteor-Data"
+
 now = datetime.now()
 yesterday = now - timedelta(1)
 
@@ -87,7 +89,17 @@ else:
     temperature2 = dataT[:,3]
     humidity = dataT[:,2]
     pressure = dataT[:,6]
-    
+
+#remove temperatures 85 = errors
+#probably wery slow!
+temperature2MA = temperature2[temperature2<80]
+timeMA = np.zeros(len(temperature2MA))
+y = 0
+for i in range(0,len(temperature2)):
+    if(temperature2[i] < 80):
+        timeMA[y] = time[i]
+        y = y+1
+
 ##THIS NEEDS LOT OF MEMORY - ON RASPBERRY PI = MEMORY ERROR
 #xnew = np.linspace(minTime,maxTime,1000)
 #temperature = Rbf(time, temperature)
@@ -151,7 +163,7 @@ ax4.spines['right'].set_position(('axes', 1.195))
 #add data
 #temperatures
 ax1.plot(time,temperature,'g')
-ax1.plot(time,temperature2,'#00ff00')
+ax1.plot(timeMA,temperature2MA,'#00ff00')
 
 ax1.plot(dataForecast[:,0],dataForecast[:,1],'+r')
 ax1.plot(xForecast,forecast(xForecast),'r')
@@ -160,7 +172,8 @@ ax1.plot(xAladin,aladinForecast(xAladin),'m')
 #humidity
 ax2.plot(time,humidity,'b')
 #precipation
-ax3.bar(aladinTime,precipation,2500,color='#03FDFD')
+ax3.bar(aladinTime,precipation,2500,color='#03FDFD',linewidth=0.5)
+
 #pressure
 pressureSeaLevel = pressure/100 + (height/8.3)
 ax4.plot(time,pressureSeaLevel,'#FF9500')
@@ -172,6 +185,9 @@ ax1.set_xticks(XTicks)
 ax1.set_xlim(minTime,maxTimeAladin)
 ax1.xaxis.set_major_formatter(tickLabels)
 ax1.set_ylabel("Temperature [°C]")
+ax4.spines['left'].set_color('g')
+ax1.yaxis.label.set_color('g')
+ax1.tick_params(axis='y', colors='g')
 
 ax2.set_xlim(minTime,maxTimeAladin)
 ax3.set_xlim(minTime,maxTimeAladin)
@@ -182,13 +198,24 @@ if maxPrecipation < 7:
     maxPrecipation = 7
 else:
     maxPrecipation * 1.2
+
+ax3.spines['right'].set_color('#03FDFD')
+ax3.yaxis.label.set_color('#03FDFD')
+ax3.tick_params(axis='y', colors='#03FDFD')
 ax3.set_ylim(0,maxPrecipation)
 ax3.set_ylabel("Precipation [mm/h]")
 
+ax4.spines['right'].set_color('#875105')
+ax4.yaxis.label.set_color('#875105')
+ax4.tick_params(axis='y', colors='#875105')
 ax4.set_ylabel("Mean sea level pressure [hPa]")
 y_formatter = matplotlib.ticker.ScalarFormatter(useOffset=False)
 ax4.yaxis.set_major_formatter(y_formatter)
 
+ax2.spines['right'].set_color('b')
+ax2.yaxis.label.set_color('b')
+ax2.tick_params(axis='y', colors='b')
+ax2.yaxis.labelpad = -5
 ax2.set_ylabel("Humidity [%]")
 ax2.set_ylim(0,105)
 
