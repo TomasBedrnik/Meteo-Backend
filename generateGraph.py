@@ -30,7 +30,8 @@ else:
 
 
 p = os.path.dirname(os.path.abspath(__file__)).strip("/").split('/')
-dataPath = "/"+p[0]+"/"+p[1]+"/meteor-Data"
+#dataPath = "/"+p[0]+"/"+p[1]+"/meteor-Data"
+dataPath = "/mnt/zbytek/home/beda/meteor-Data"
 
 now = datetime.now()
 yesterday = now - timedelta(1)
@@ -57,6 +58,7 @@ dataT = np.genfromtxt(dataPath+"/"+fileT, delimiter=",",usecols=range(0,7),conve
 
 dataForecast = np.genfromtxt(dataPath+"/forecast.csv", delimiter=",",usecols=range(0,2),converters={0:convertfunc})
 
+#780: 2017-04-08 12:58:13
 #find index 24 hours back
 index24 = 0
 if(yesterdayData):
@@ -206,9 +208,8 @@ ax4.set_xlim(minTime,maxTimeAladin)
 
 maxPrecipation = 7
 if(len(precipation) > 0):
-    maxPrecipation = max(precipation);
-    if maxPrecipation > 7:
-        maxPrecipation * 1.2
+    if max(precipation) > 7:
+        maxPrecipation = max(precipation) * 1.2
 
 ax3.spines['right'].set_color('#03FDFD')
 ax3.yaxis.label.set_color('#03FDFD')
