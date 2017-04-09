@@ -30,8 +30,7 @@ else:
 
 
 p = os.path.dirname(os.path.abspath(__file__)).strip("/").split('/')
-#dataPath = "/"+p[0]+"/"+p[1]+"/meteor-Data"
-dataPath = "/mnt/zbytek/home/beda/meteor-Data"
+dataPath = "/"+p[0]+"/"+p[1]+"/meteor-Data"
 
 now = datetime.now()
 yesterday = now - timedelta(1)
