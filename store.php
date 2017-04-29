@@ -3,16 +3,24 @@
 #Don't forget to set your locale in php.ini
 #you need to have write access to file dir (note /tmp with systemd sometimes does not work
 
+date_default_timezone_set('Europe/Prague');
 $dir = "/home/beda/data/test/";
+
+
 $out .= "\nphp://input:";
 $out .= file_get_contents('php://input');
 
 $data = json_decode(file_get_contents('php://input'), true);
 
 if (count($data) == 0) {
+#TEST run -> try to create dir
+    if (!mkdir($dir."testDIR", 0777)) {
+        echo "Failed to create folder...";
+        exit;
+    }
 #TEST run -> try to create file in dir
     $somecontent = "Test.";
-    $filename = $dir."test.txt";
+    $filename = $dir."testDIR/test.txt";
     if (!$handle = fopen($filename, 'w')) {
         echo "Cannot open file ($filename), script won't work!";
         exit;
@@ -27,7 +35,18 @@ if (count($data) == 0) {
         echo "Cannot delete file ($filename), script probably won't work!";
         exit;
     }
-    echo "Success, wrote ($somecontent) to file ($filename) and deleted it.";
+    if(rmdir($dir."testDIR") === FALSE) {
+        echo "Cannot remove, script probably won't work!";
+        exit;
+    }
+    echo "Success, wrote ($somecontent) to file ($filename) and deleted it.<br />";
+    $now = microtime(true);
+    $d = new DateTime(date('Y-m-d H:i:s.' . $micro, $now));
+    $timestring .= $d->format("Y-m-d H:i:s.u");
+    echo "Server time: ".$timestring;
+    echo "Check if is OK -> if not, set PHP timezone at the beginning of this script.<br />";
+    $tz = date_timezone_get($d);
+    echo timezone_name_get($tz);
 
     fclose($handle);
 } else {
@@ -61,7 +80,7 @@ if (count($data) == 0) {
         $out .= "Time: ";
         $micro = sprintf("%06d", ($now - floor($now)) * 1000000);
         $d = new DateTime(date('Y-m-d H:i:s.' . $micro, $now));
-        $out .= $d->format("Y-m-d H:i:s.u"); // note at point on "u"
+        $out .= $d->format("Y-m-d H:i:s.u");
         $out .= "\n";
 
         //TODO: ADD length checks!!!
